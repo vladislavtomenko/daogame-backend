@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 
@@ -15,6 +16,16 @@ var upgrader = websocket.Upgrader{
 	},
 }
 
+type GameMap struct {
+	X int `json:"X"`
+}
+
+func NewGameMap() GameMap {
+	return GameMap{
+		X: 0,
+	}
+}
+
 func main() {
 	http.HandleFunc("/websocket", func(w http.ResponseWriter, r *http.Request) {
 		conn, err := upgrader.Upgrade(w, r, nil)
@@ -22,16 +33,59 @@ func main() {
 			fmt.Println(err)
 			return
 		}
+
+		gameMap := NewGameMap()
+
 		for {
 			msgType, msg, err := conn.ReadMessage()
 			if err != nil {
 				fmt.Println(err)
 				return
 			}
+
+			fmt.Println(string(msg))
+
 			switch string(msg) {
+			case "reset":
+				{
+					gameMap.X = 0
+
+					jsonRespone, _ := json.Marshal(gameMap)
+					err = conn.WriteMessage(msgType, []byte(string(jsonRespone)))
+					if err != nil {
+						fmt.Println(err)
+						return
+					}
+				}
+			case "right":
+				{
+					gameMap.X = gameMap.X + 40
+
+					jsonRespone, _ := json.Marshal(gameMap)
+					err = conn.WriteMessage(msgType, []byte(string(jsonRespone)))
+					if err != nil {
+						fmt.Println(err)
+						return
+					}
+
+				}
+			case "left":
+				{
+					gameMap.X = gameMap.X - 40
+					if gameMap.X < 0 {
+						gameMap.X = 0
+					}
+
+					jsonRespone, _ := json.Marshal(gameMap)
+					err = conn.WriteMessage(msgType, []byte(string(jsonRespone)))
+					if err != nil {
+						fmt.Println(err)
+						return
+					}
+
+				}
 			case "ping":
 				{
-					fmt.Println("ping")
 					err = conn.WriteMessage(msgType, []byte("pong"))
 					if err != nil {
 						fmt.Println(err)
@@ -41,12 +95,10 @@ func main() {
 			case "close":
 				{
 					conn.Close()
-					fmt.Println(string(msg))
 					return
 				}
 			default:
 				{
-					fmt.Println("unknown command")
 					err = conn.WriteMessage(msgType, []byte("Unknown command"))
 					if err != nil {
 						fmt.Println(err)
