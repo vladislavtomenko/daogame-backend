@@ -112,11 +112,11 @@ func main() {
 			case "help":
 				{
 					err = conn.WriteMessage(msgType, []byte(`# Available commands:
-            # help
-            # ping
-            # left
-            # right
-            # reset`))
+# help
+# ping
+# left
+# right
+# reset`))
 					if err != nil {
 						fmt.Println(err)
 						return
