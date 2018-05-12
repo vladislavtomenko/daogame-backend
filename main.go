@@ -16,13 +16,33 @@ var upgrader = websocket.Upgrader{
 	},
 }
 
-type GameMap struct {
-	X int `json:"X"`
+type Player struct {
+	X     int `json:"X"`
+	Speed int `json:"Speed"`
 }
 
-func NewGameMap() GameMap {
-	return GameMap{
-		X: 0,
+func (p *Player) MoveLeft() {
+	p.X = p.X - p.Speed
+	if p.X < 0 {
+		p.X = 0
+	}
+	return
+}
+
+func (p *Player) MoveRight() {
+	p.X = p.X + p.Speed
+	return
+}
+
+func (p *Player) ResetLocation() {
+	p.X = 0
+	return
+}
+
+func NewPlayer() Player {
+	return Player{
+		X:     0,
+		Speed: 40,
 	}
 }
 
@@ -34,7 +54,7 @@ func main() {
 			return
 		}
 
-		gameMap := NewGameMap()
+		player := NewPlayer()
 
 		for {
 			msgType, msg, err := conn.ReadMessage()
@@ -48,9 +68,9 @@ func main() {
 			switch string(msg) {
 			case "reset":
 				{
-					gameMap.X = 0
+					player.ResetLocation()
 
-					jsonRespone, _ := json.Marshal(gameMap)
+					jsonRespone, _ := json.Marshal(player)
 					err = conn.WriteMessage(msgType, []byte(string(jsonRespone)))
 					if err != nil {
 						fmt.Println(err)
@@ -59,9 +79,9 @@ func main() {
 				}
 			case "right":
 				{
-					gameMap.X = gameMap.X + 40
+					player.MoveRight()
 
-					jsonRespone, _ := json.Marshal(gameMap)
+					jsonRespone, _ := json.Marshal(player)
 					err = conn.WriteMessage(msgType, []byte(string(jsonRespone)))
 					if err != nil {
 						fmt.Println(err)
@@ -71,12 +91,9 @@ func main() {
 				}
 			case "left":
 				{
-					gameMap.X = gameMap.X - 40
-					if gameMap.X < 0 {
-						gameMap.X = 0
-					}
+					player.MoveLeft()
 
-					jsonRespone, _ := json.Marshal(gameMap)
+					jsonRespone, _ := json.Marshal(player)
 					err = conn.WriteMessage(msgType, []byte(string(jsonRespone)))
 					if err != nil {
 						fmt.Println(err)
