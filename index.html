@@ -61,7 +61,7 @@
 
       ws.onmessage = function(e){
         if ( e.data == 'pong' ) {
-          wsResponsePing.innerHTML = Date.now() - pingSendTime;
+          wsResponsePing.innerHTML = Date.now() - pingSendTime + 'ms';
         } else {
           output.value = output.value + '\n' + e.data;
           wsResponseLast.innerHTML = Date.now() - wsSendTime + 'ms';
