@@ -109,6 +109,19 @@ func main() {
 						return
 					}
 				}
+			case "help":
+				{
+					err = conn.WriteMessage(msgType, []byte(`# Available commands:
+            # help
+            # ping
+            # left
+            # right
+            # reset`))
+					if err != nil {
+						fmt.Println(err)
+						return
+					}
+				}
 			case "close":
 				{
 					conn.Close()
@@ -116,7 +129,7 @@ func main() {
 				}
 			default:
 				{
-					err = conn.WriteMessage(msgType, []byte("Unknown command"))
+					err = conn.WriteMessage(msgType, []byte("# Unknown command. Send 'help' to get the commands list."))
 					if err != nil {
 						fmt.Println(err)
 						return
