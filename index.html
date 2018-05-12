@@ -1,0 +1,46 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+
+    <script type="text/javascript">
+         function myWebsocketStart()
+         {
+               ws = new WebSocket("ws://api.dao.ping1111.com:3000/websocket");
+
+               ws.onopen = function()
+               {
+                  var output = document.getElementById("output");
+                  output.value = "# Web Socket is connected\n# Send ping or close";
+               };
+
+               ws.onmessage = function (evt)
+               {
+                  var output = document.getElementById("output");
+                  output.value = output.value + "\n" + evt.data
+
+               };
+
+               ws.onclose = function()
+               {
+                  var output = document.getElementById("output");
+                  output.value = output.value + "\n" + "# Connection closed";
+               };
+
+         }
+
+         function sendMessage()
+         {
+           var command = document.getElementById("input");
+           ws.send(command.value);
+           input.value = ""
+         }
+
+    </script>
+
+</head>
+<body  onload="javascript:myWebsocketStart()">
+<input type=input id="input" size=45 />
+<button onclick="javascript:sendMessage()">Send</button></br>
+<textarea id="output" value="" rows="20" cols="50" readonly></textarea>
+</body>
+</html>
