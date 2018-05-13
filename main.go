@@ -18,8 +18,8 @@ var upgrader = websocket.Upgrader{
 }
 
 type Player struct {
-	X     int `json:"X"`
-	Speed int `json:"Speed"`
+	X     int `json:"x"`
+	Speed int `json:"speed"`
 }
 
 func (p *Player) MoveLeft() {
@@ -41,8 +41,8 @@ func (p *Player) ResetLocation() {
 }
 
 func (p *Player) WrapJson() []byte {
-	jsonRespone, _ := json.Marshal(p)
-	return []byte(strings.Join([]string{string(`{"Player":`), string(jsonRespone), string(`}`)}, ""))
+	json, _ := json.Marshal(p)
+	return []byte(strings.Join([]string{string(`{"player":`), string(json), string(`}`)}, ""))
 
 }
 
