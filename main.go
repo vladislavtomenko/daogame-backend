@@ -42,7 +42,7 @@ func (p *Player) ResetLocation() {
 
 func (p *Player) WrapJson() []byte {
 	jsonRespone, _ := json.Marshal(p)
-	return []byte(strings.Join([]string{string(`{"Player": {`), string(jsonRespone), string(`}`)}, ""))
+	return []byte(strings.Join([]string{string(`{"Player":`), string(jsonRespone), string(`}`)}, ""))
 
 }
 
