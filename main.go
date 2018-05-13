@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/gorilla/websocket"
 )
@@ -39,10 +40,16 @@ func (p *Player) ResetLocation() {
 	return
 }
 
+func (p *Player) WrapJson() []byte {
+	jsonRespone, _ := json.Marshal(p)
+	return []byte(strings.Join([]string{string(`{"Player": {`), string(jsonRespone), string(`}`)}, ""))
+
+}
+
 func NewPlayer() Player {
 	return Player{
 		X:     0,
-		Speed: 40,
+		Speed: 10,
 	}
 }
 
@@ -70,8 +77,7 @@ func main() {
 				{
 					player.ResetLocation()
 
-					jsonRespone, _ := json.Marshal(player)
-					err = conn.WriteMessage(msgType, []byte(string(jsonRespone)))
+					err = conn.WriteMessage(msgType, player.WrapJson())
 					if err != nil {
 						fmt.Println(err)
 						return
@@ -81,8 +87,7 @@ func main() {
 				{
 					player.MoveRight()
 
-					jsonRespone, _ := json.Marshal(player)
-					err = conn.WriteMessage(msgType, []byte(string(jsonRespone)))
+					err = conn.WriteMessage(msgType, player.WrapJson())
 					if err != nil {
 						fmt.Println(err)
 						return
@@ -93,8 +98,7 @@ func main() {
 				{
 					player.MoveLeft()
 
-					jsonRespone, _ := json.Marshal(player)
-					err = conn.WriteMessage(msgType, []byte(string(jsonRespone)))
+					err = conn.WriteMessage(msgType, player.WrapJson())
 					if err != nil {
 						fmt.Println(err)
 						return
