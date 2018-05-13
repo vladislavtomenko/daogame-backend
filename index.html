@@ -1,46 +1,99 @@
-<!DOCTYPE HTML>
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
+  <title>DWSD - Dao WebSocket Debugger</title>
+  
+  <style>
+    * {
+      padding: 0;
+      margin: 0;
+      box-sizing: border-box;
+    }
+    body {
+      padding: 15px;
+    }
+    form {
+      width: 370px;
+    }
+    input {
+      width: 85%;
+      padding: 3px 5px;
+      outline: none;
+    }
+    button {
+      width: 13%;
+      float: right;
+      padding: 3px 0;
+    }
+    textarea {
+      width: 100%;
+      padding: 5px;
+      margin-top: 10px;
+      outline: none;
+    }
+    i {
+      font-style: normal;
+      padding: 0 3px;
+      background: #ddd;
+    }
+  </style>
 
-    <script type="text/javascript">
-         function myWebsocketStart()
-         {
-               ws = new WebSocket("ws://api.dao.ping1111.com:3000/websocket");
+  <script type="text/javascript">
+    document.addEventListener('DOMContentLoaded', function(){
 
-               ws.onopen = function()
-               {
-                  var output = document.getElementById("output");
-                  output.value = "# Web Socket is connected\n# Send ping or close";
-               };
+      ws = new WebSocket('ws://api.dao.ping1111.com:3000/websocket');
 
-               ws.onmessage = function (evt)
-               {
-                  var output = document.getElementById("output");
-                  output.value = output.value + "\n" + evt.data
+      var output = document.getElementById('output');
+      var lastCommand = document.getElementById('last-command');
+      var wsResponseLast = document.getElementById('wsResponse-last');
+      var wsResponsePing = document.getElementById('wsResponse-ping');
+      var wsSendTime;
+      var pingSendTime;
 
-               };
+      ws.onopen = function(){
+        output.value = '# Web Socket is connected\n# Send ping or close';
+        setInterval(function(){
+          ws.send('ping');
+          pingSendTime = Date.now();
+        },1000);
+      };
 
-               ws.onclose = function()
-               {
-                  var output = document.getElementById("output");
-                  output.value = output.value + "\n" + "# Connection closed";
-               };
+      ws.onmessage = function(e){
+        if ( e.data == 'pong' ) {
+          wsResponsePing.innerHTML = Date.now() - pingSendTime + 'ms';
+        } else {
+          output.value = output.value + '\n' + e.data;
+          wsResponseLast.innerHTML = Date.now() - wsSendTime + 'ms';
+        }
+      };
 
-         }
+      ws.onclose = function(){
+        output.value = output.value + '\n# Connection closed';
+      };
 
-         function sendMessage()
-         {
-           var command = document.getElementById("input");
-           ws.send(command.value);
-           input.value = ""
-         }
+      document.getElementById('debugger').onsubmit = function(e){
+        e.preventDefault();
 
-    </script>
-
+        var command = document.getElementById('command');
+        ws.send(command.value);
+        wsSendTime = Date.now();
+        lastCommand.innerHTML = command.value;
+        command.value = '';
+      };
+    })
+  </script>
 </head>
-<body  onload="javascript:myWebsocketStart()">
-<input type=input id="input" size=45 />
-<button onclick="javascript:sendMessage()">Send</button></br>
-<textarea id="output" value="" rows="20" cols="50" readonly></textarea>
+<body>
+
+  <form id="debugger">
+    <input type="input" id="command" size="45">
+    <button type="submit">Send</button>
+    <textarea id="output" rows="20" cols="50" readonly></textarea>
+  </form>
+
+  <p>Last command <i id="last-command"></i>: <span id="wsResponse-last"></span></p>
+  <p>Ping: <span id="wsResponse-ping"></span></p>
+
 </body>
 </html>
