@@ -49,7 +49,7 @@ func (p *Player) WrapJson() []byte {
 func NewPlayer() Player {
 	return Player{
 		X:     0,
-		Speed: 40,
+		Speed: 20,
 	}
 }
 
