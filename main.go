@@ -121,7 +121,7 @@ func NewPlayer() Player {
 
 func NewRandomMap() Map {
 	return Map{
-		Size: 1000,
+		Size: 1100,
 		Objects: []Object{
 			Object{
 				Type:     "fence",
@@ -131,7 +131,7 @@ func NewRandomMap() Map {
 			},
 			Object{
 				Type:     "fence",
-				X:        934,
+				X:        1080,
 				Size:     5,
 				Passable: false,
 			},
