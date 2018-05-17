@@ -227,6 +227,18 @@ func main() {
 					}
 
 				}
+			case "player+map":
+				{
+					jsonPlayer, _ := json.Marshal(player)
+					jsonMap, _ := json.Marshal(gameMap)
+
+					err = conn.WriteMessage(msgType, []byte(strings.Join([]string{`{"player":`, string(jsonPlayer), `,"map":`, string(jsonMap), `}`}, "")))
+					if err != nil {
+						fmt.Println(err)
+						return
+					}
+
+				}
 			case "ping":
 				{
 					err = conn.WriteMessage(msgType, []byte("pong"))
@@ -244,6 +256,7 @@ func main() {
 # left - move player to the left
 # right - move player to the right
 # player - get player obj
+# player+map - get the map and player obj
 # reset - reset player location`))
 					if err != nil {
 						fmt.Println(err)
