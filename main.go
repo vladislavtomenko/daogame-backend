@@ -54,11 +54,13 @@ type Object struct {
 	X        int    `json:"x"`
 	Size     int    `json:"size"`
 	Passable bool   `json:"passable"`
+	Height   int    `json:"height"`
 }
 
 type Player struct {
-	X     int `json:"x"`
-	Speed int `json:"speed"`
+	X          int `json:"x"`
+	Speed      int `json:"speed"`
+	JumpHeight int `json:"jumpHeight"`
 }
 
 func (p *Player) MoveLeft(gameMap *Map) {
@@ -81,6 +83,25 @@ func (p *Player) MoveLeft(gameMap *Map) {
 
 }
 
+func (p *Player) JumpLeft(gameMap *Map) {
+
+	objList := gameMap.GetImpassableObjectsInRange(p.X-(p.Speed/2), p.X)
+	if len(objList) > 0 {
+		newX := p.X - (p.Speed / 2)
+		for _, obj := range objList {
+			if newX < obj.X && obj.Height > p.JumpHeight {
+				newX = obj.X + 1
+			}
+		}
+		p.X = newX
+	} else {
+		p.X = p.X - (p.Speed / 2)
+		if p.X > gameMap.Size {
+			p.X = gameMap.Size
+		}
+	}
+}
+
 func (p *Player) MoveRight(gameMap *Map) {
 
 	objList := gameMap.GetImpassableObjectsInRange(p.X, p.X+p.Speed)
@@ -94,6 +115,25 @@ func (p *Player) MoveRight(gameMap *Map) {
 		p.X = newX
 	} else {
 		p.X = p.X + p.Speed
+		if p.X > gameMap.Size {
+			p.X = gameMap.Size
+		}
+	}
+}
+
+func (p *Player) JumpRight(gameMap *Map) {
+
+	objList := gameMap.GetImpassableObjectsInRange(p.X, p.X+(p.Speed/2))
+	if len(objList) > 0 {
+		newX := p.X + (p.Speed / 2)
+		for _, obj := range objList {
+			if newX > obj.X && obj.Height > p.JumpHeight {
+				newX = obj.X - 1
+			}
+		}
+		p.X = newX
+	} else {
+		p.X = p.X + (p.Speed / 2)
 		if p.X > gameMap.Size {
 			p.X = gameMap.Size
 		}
@@ -114,8 +154,9 @@ func (p *Player) WrapJson() []byte {
 
 func NewPlayer() Player {
 	return Player{
-		X:     0,
-		Speed: 20,
+		X:          0,
+		Speed:      20,
+		JumpHeight: 10,
 	}
 }
 
@@ -124,34 +165,46 @@ func NewRandomMap() Map {
 		Size: 1100,
 		Objects: []Object{
 			Object{
+				Type:     "wall",
+				X:        1050,
+				Size:     5,
+				Passable: false,
+				Height:   25,
+			},
+			Object{
 				Type:     "fence",
 				X:        939,
 				Size:     5,
 				Passable: false,
+				Height:   5,
 			},
 			Object{
 				Type:     "fence",
 				X:        1080,
 				Size:     5,
 				Passable: false,
+				Height:   5,
 			},
 			Object{
 				Type:     "balloon",
 				X:        999,
 				Size:     1,
 				Passable: true,
+				Height:   0,
 			},
 			Object{
 				Type:     "balloon",
 				X:        400,
 				Size:     1,
 				Passable: true,
+				Height:   0,
 			},
 			Object{
 				Type:     "balloon",
 				X:        119,
 				Size:     1,
 				Passable: true,
+				Height:   0,
 			},
 		},
 	}
@@ -207,9 +260,31 @@ func main() {
 					}
 
 				}
+			case "jumpright":
+				{
+					player.JumpRight(&gameMap)
+
+					err = conn.WriteMessage(msgType, player.WrapJson())
+					if err != nil {
+						fmt.Println(err)
+						return
+					}
+
+				}
 			case "left":
 				{
 					player.MoveLeft(&gameMap)
+
+					err = conn.WriteMessage(msgType, player.WrapJson())
+					if err != nil {
+						fmt.Println(err)
+						return
+					}
+
+				}
+			case "jumpleft":
+				{
+					player.JumpLeft(&gameMap)
 
 					err = conn.WriteMessage(msgType, player.WrapJson())
 					if err != nil {
@@ -254,7 +329,9 @@ func main() {
 # map - get the game map
 # ping - ping backend
 # left - move player to the left
+# jumpleft - player jump to the left
 # right - move player to the right
+# jumpright - player jump to the right
 # player - get player obj
 # player+map - get the map and player obj
 # reset - reset player location`))
