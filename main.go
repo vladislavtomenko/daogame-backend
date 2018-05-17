@@ -121,23 +121,35 @@ func NewPlayer() Player {
 
 func NewRandomMap() Map {
 	return Map{
-		Size: 200,
+		Size: 1000,
 		Objects: []Object{
 			Object{
 				Type:     "fence",
-				X:        139,
+				X:        939,
 				Size:     5,
 				Passable: false,
 			},
 			Object{
 				Type:     "fence",
-				X:        134,
+				X:        934,
 				Size:     5,
 				Passable: false,
 			},
 			Object{
 				Type:     "balloon",
-				X:        19,
+				X:        999,
+				Size:     1,
+				Passable: true,
+			},
+			Object{
+				Type:     "balloon",
+				X:        400,
+				Size:     1,
+				Passable: true,
+			},
+			Object{
+				Type:     "balloon",
+				X:        119,
 				Size:     1,
 				Passable: true,
 			},
