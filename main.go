@@ -96,8 +96,8 @@ func (p *Player) JumpLeft(gameMap *Map) {
 		p.X = newX
 	} else {
 		p.X = p.X - (p.Speed / 2)
-		if p.X > gameMap.Size {
-			p.X = gameMap.Size
+		if p.X < 0 {
+			p.X = 0
 		}
 	}
 }
