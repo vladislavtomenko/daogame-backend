@@ -244,8 +244,7 @@ func main() {
 # left - move player to the left
 # right - move player to the right
 # player - get player obj
-# reset - reset player location
-# map`))
+# reset - reset player location`))
 					if err != nil {
 						fmt.Println(err)
 						return
