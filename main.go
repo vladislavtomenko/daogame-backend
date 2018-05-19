@@ -152,6 +152,7 @@ func (p *Player) WrapJson() []byte {
 
 }
 
+// NewPlayer returns a new player object
 func NewPlayer() Player {
 	return Player{
 		X:          0,
