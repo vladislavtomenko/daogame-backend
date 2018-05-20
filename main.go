@@ -161,6 +161,7 @@ func NewPlayer() Player {
 	}
 }
 
+// NewRandomMap returns a new game map
 func NewRandomMap() Map {
 	return Map{
 		Size: 1100,
