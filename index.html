@@ -52,7 +52,7 @@
       var pingSendTime;
 
       ws.onopen = function(){
-        output.value = '# Web Socket is connected\n# Send ping or close';
+        output.value = '# Web Socket is connected\n# Send help or close';
         setInterval(function(){
           ws.send('ping');
           pingSendTime = Date.now();
