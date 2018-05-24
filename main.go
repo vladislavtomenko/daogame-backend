@@ -63,6 +63,7 @@ type Player struct {
 	JumpHeight int `json:"jumpHeight"`
 }
 
+// MoveLeft moves player to left
 func (p *Player) MoveLeft(gameMap *Map) {
 
 	objList := gameMap.GetImpassableObjectsInRange(p.X-p.Speed, p.X)
