@@ -103,6 +103,7 @@ func (p *Player) JumpLeft(gameMap *Map) {
 	}
 }
 
+// MoveRight moves player to right
 func (p *Player) MoveRight(gameMap *Map) {
 
 	objList := gameMap.GetImpassableObjectsInRange(p.X, p.X+p.Speed)
