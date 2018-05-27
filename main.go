@@ -49,6 +49,7 @@ func (m *Map) WrapJson() []byte {
 	return []byte(strings.Join([]string{`{"map":`, string(json), `}`}, ""))
 }
 
+// Object is an object on a map
 type Object struct {
 	Type     string `json:"type"`
 	X        int    `json:"x"`
