@@ -124,6 +124,7 @@ func (p *Player) MoveRight(gameMap *Map) {
 	}
 }
 
+// JumpRight is to jump to the right
 func (p *Player) JumpRight(gameMap *Map) {
 
 	objList := gameMap.GetImpassableObjectsInRange(p.X, p.X+(p.Speed/2))
