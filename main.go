@@ -85,6 +85,7 @@ func (p *Player) MoveLeft(gameMap *Map) {
 
 }
 
+// JumpLeft is to jump to the left
 func (p *Player) JumpLeft(gameMap *Map) {
 
 	objList := gameMap.GetImpassableObjectsInRange(p.X-(p.Speed/2), p.X)
