@@ -151,6 +151,7 @@ func (p *Player) ResetLocation() {
 	return
 }
 
+// WrapJson is to return json with a player
 func (p *Player) WrapJson() []byte {
 	json, _ := json.Marshal(p)
 	return []byte(strings.Join([]string{`{"player":`, string(json), `}`}, ""))
