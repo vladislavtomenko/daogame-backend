@@ -44,6 +44,7 @@ func (m *Map) GetObjectsInRange(x1 int, x2 int) []Object {
 	return objList
 }
 
+// WrapJson is to return json with a map
 func (m *Map) WrapJson() []byte {
 	json, _ := json.Marshal(m)
 	return []byte(strings.Join([]string{`{"map":`, string(json), `}`}, ""))
