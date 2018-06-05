@@ -17,6 +17,7 @@ var upgrader = websocket.Upgrader{
 	},
 }
 
+// Map is a game map
 type Map struct {
 	Size    int      `json:"size"`
 	Objects []Object `json:"objects"`
